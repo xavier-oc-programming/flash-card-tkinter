@@ -18,11 +18,13 @@ class FlashCard:
 
     def _load(self) -> list[dict]:
         try:
-            path = self._saved_path
-            path.open()  # raises FileNotFoundError if missing
+            with self._saved_path.open(newline="", encoding="utf-8") as f:
+                words = list(csv.DictReader(f))
+            if words:
+                return words
         except FileNotFoundError:
-            path = self._orig_path
-        with path.open(newline="", encoding="utf-8") as f:
+            pass
+        with self._orig_path.open(newline="", encoding="utf-8") as f:
             return list(csv.DictReader(f))
 
     def next_word(self) -> dict | None:
